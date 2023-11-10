@@ -17,17 +17,17 @@ db.connect((err) => {
     console.log('connected to database')
 })
 
-inquirer.prompt([
-    {
-        type: 'list',
-        name: 'selection',
-        choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Deparments', 'Add Department', 'Quit'],
-        message: 'What would you like to do?'
-    }
+// inquirer.prompt([
+//     {
+//         type: 'list',
+//         name: 'selection',
+//         choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Deparments', 'Add Department', 'Quit'],
+//         message: 'What would you like to do?'
+//     }
 
 
 
-])
+// ])
 
 
 
