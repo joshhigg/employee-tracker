@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
+const consoleTable = require('console.table');
 require('dotenv').config();
 
 const db = mysql.createConnection({
@@ -10,26 +11,55 @@ const db = mysql.createConnection({
 });
 
 db.connect((err) => {
-    if(err) {
+    if (err) {
         console.log(err);
         return;
     }
     console.log('connected to database')
 })
 
-// inquirer.prompt([
-//     {
-//         type: 'list',
-//         name: 'selection',
-//         choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Deparments', 'Add Department', 'Quit'],
-//         message: 'What would you like to do?'
-//     }
+inquirer.prompt([
+    {
+        type: 'list',
+        name: 'selection',
+        choices: [{ name: 'View All Employees', value: 0 }, 
+        { name: 'Add Employee', value: 1 }, 
+        { name: 'Update Employee Role', value: 2 },
+        { name: 'View All Roles', value: 3 }, 
+        { name: 'Add Role', value: 4 }, 
+        { name: 'View All Departments', value: 5 },
+        { name: 'Add Department', value: 6 }, 
+        { name: 'Quit', value: 7 }],
+        message: 'What would you like to do?'
+    }
+]).then(function (response) {
+    if (response.selection == 0) {
+        console.log('\n')
+        db.query('SELECT * FROM employee', function (err, results) {
+            console.table(results);
+        });
+    }
+    if (response.selection == 3) {
+        console.log('\n')
+        db.query('SELECT * FROM role', function (err, results) {
+            console.table(results);
+        });
+    }
+    if (response.selection == 5) {
+        console.log('\n')
+        db.query('SELECT * FROM department', function (err, results) {
+            console.table(results);
+        });
+    }
+    if (response.selection == 7) {
+        process.exit();
+    }
+});
 
 
-
-// ])
-
-
+// db.query('SELECT * FROM department', function (err, results) {
+//     console.log(results);
+//   });
 
 
 
