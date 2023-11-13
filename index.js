@@ -72,7 +72,13 @@ inquirer.prompt([
     // View All Employees
     if (response.selection == 0) {
         console.log('\n')
-        db.query('SELECT * FROM employee', function (err, results) {
+        db.query(`
+        SELECT e.id, e.first_name AS first, e.last_name AS last, r.title AS role, 
+        CONCAT(m.first_name, ' ', m.last_name) AS manager
+        FROM employee e
+        LEFT JOIN role r ON e.role_id = r.id
+        LEFT JOIN employee m ON e.manager_id = m.id;
+    `, function (err, results) {
             console.table(results);
         });
     }
@@ -110,7 +116,13 @@ inquirer.prompt([
                         } else {
                             console.log("Employee added successfully!");
                             // Fetch and display updated employee list
-                            db.query("SELECT * FROM employee;", function (err, results) {
+                            db.query(`
+                            SELECT e.id, e.first_name AS first, e.last_name AS last, r.title AS role, 
+                            CONCAT(m.first_name, ' ', m.last_name) AS manager
+                            FROM employee e
+                            LEFT JOIN role r ON e.role_id = r.id
+                            LEFT JOIN employee m ON e.manager_id = m.id;
+                            `, function (err, results) {
                                 console.table(results);
                             });
                         }
@@ -144,7 +156,13 @@ inquirer.prompt([
                             console.error(err);
                         } else {
                             console.log("Updated Employee's role");
-                            db.query('SELECT * FROM employee', function (err, results) {
+                            db.query(`
+                            SELECT e.id, e.first_name AS first, e.last_name AS last, r.title AS role, 
+                            CONCAT(m.first_name, ' ', m.last_name) AS manager
+                            FROM employee e
+                            LEFT JOIN role r ON e.role_id = r.id
+                            LEFT JOIN employee m ON e.manager_id = m.id;
+                            `, function (err, results) {
                                 console.table(results);
                             });
                         }
@@ -157,8 +175,8 @@ inquirer.prompt([
     // View all Roles
     if (response.selection == 3) {
         console.log('\n')
-        db.query('SELECT * FROM role', function (err, results) {
-            console.table(results);
+        db.query("SELECT r.id, r.title, r.salary, d.name AS department FROM role r LEFT JOIN department d ON r.department_id = d.id;", function (err, results) {
+            console.table(results)
         });
     }
     // Add new role
@@ -185,7 +203,7 @@ inquirer.prompt([
                 db.query(`INSERT INTO role (title, salary, department_id) VALUES ('${data.title}', '${data.salary}', ${data.department})`, function (err, results) {
                 })
             }).then(() => {
-                db.query("SELECT * FROM role;", function (err, results) {
+                db.query("SELECT r.id, r.title, r.salary, d.name AS department FROM role r LEFT JOIN department d ON r.department_id = d.id;", function (err, results) {
                     console.table(results)
                 });
             });
@@ -227,12 +245,5 @@ inquirer.prompt([
 
 
 
-
-
-
-
-
-
-// Inquirer starts on node index.js
-// Presented with options to view all departments, view all roles, view all employees.  Can also add a department, role, employee, or update employee role
-// When they select what they want to do, they can do that, and the initial prompt shows up again
+// to do:  Anytime the user would see "department ID ", "manager ID", or "Role ID", replace that with the actual names
+// Whenever a response is complete, rerun the original prompt
